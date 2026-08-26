@@ -45,24 +45,6 @@ const ANIMO = [
   },
 ];
 
-const VALUES = [
-  {
-    n: '01',
-    title: 'Curado a mano, no scrapeado',
-    body: 'No hay conexión automática a portales de empleo — Claude busca y agrega vacantes reales cuando se lo pides.',
-  },
-  {
-    n: '02',
-    title: 'Comparado con tu perfil real',
-    body: 'Cada vacante se compara contra tu experiencia real (Koronet, Karibik, Triario) y tu stack, no contra un perfil genérico.',
-  },
-  {
-    n: '03',
-    title: 'Aplicas en el sitio real',
-    body: 'Cada "Postular" te lleva a la publicación original de la empresa. Aquí solo llevas el control de a qué aplicaste.',
-  },
-];
-
 export default function Home() {
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
@@ -195,16 +177,6 @@ export default function Home() {
               </div>
               <p className="text-sm font-semibold text-ink">{job.salario}</p>
             </Link>
-          ))}
-        </div>
-
-        <div className="mt-14 grid gap-10 border-t border-divider pt-10 sm:grid-cols-3">
-          {VALUES.map((v) => (
-            <div key={v.n}>
-              <p className="font-mono text-[13px] text-accent-ink">{v.n}</p>
-              <h4 className="mt-2 text-base font-[650] text-ink">{v.title}</h4>
-              <p className="mt-1.5 text-sm leading-[1.55] text-ink-3">{v.body}</p>
-            </div>
           ))}
         </div>
       </section>
