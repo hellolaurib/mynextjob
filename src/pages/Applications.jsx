@@ -12,6 +12,7 @@ const STATUS = {
   Cerrada: { filled: 4, badgeBg: '#F7F3F4', badgeText: '#8A8F9C', segment: '#C9CDD5' },
 };
 
+const STATUS_OPTIONS = Object.keys(STATUS);
 const TABS = ['Activas', 'Archivadas', 'Guardadas'];
 
 function Pipeline({ estado }) {
@@ -31,7 +32,7 @@ function Pipeline({ estado }) {
 
 export default function Applications() {
   const [tab, setTab] = useState('Activas');
-  const { applications, savedJobIds, lastAppliedJobId, toggleSaved } = useApp();
+  const { applications, savedJobIds, lastAppliedJobId, toggleSaved, updateStatus } = useApp();
 
   const activas = applications.filter((a) => a.estado !== 'Cerrada');
   const archivadas = applications.filter((a) => a.estado === 'Cerrada');
@@ -44,7 +45,9 @@ export default function Applications() {
     <div className="mx-auto max-w-[1000px] px-8 pb-20 pt-10">
       <h1 className="text-[26px] font-bold tracking-[-0.02em] text-ink sm:text-[30px]">Mis postulaciones</h1>
       <p className="mt-1.5 text-[15px] text-ink-3">
-        {activas.length} activas · {pendientes} con respuesta pendiente de tu parte
+        {applications.length === 0
+          ? 'Aún no has marcado ninguna postulación.'
+          : `${activas.length} activas · ${pendientes} con respuesta pendiente de tu parte`}
       </p>
 
       <div className="mt-6 mb-5 inline-flex gap-[3px] rounded-lg bg-[#edeef1] p-[3px]">
@@ -63,59 +66,69 @@ export default function Applications() {
 
       {tab !== 'Guardadas' ? (
         <div className="overflow-hidden rounded-[13px] border border-border bg-white">
-          {rows.map((app, i) => {
+          {rows.map((app) => {
             const cfg = STATUS[app.estado];
             const isNew = app.jobId === lastAppliedJobId;
             const job = JOBS.find((j) => j.id === app.jobId);
             return (
-              <Link
+              <div
                 key={app.jobId}
-                to={job ? `/empleos/${job.id}` : '#'}
-                className={`grid grid-cols-[40px_1fr] items-center gap-3 border-b border-divider p-[18px] transition-colors last:border-b-0 hover:bg-surface-2 sm:grid-cols-[40px_1fr_220px_130px] sm:gap-[18px] ${
+                className={`grid grid-cols-[40px_1fr] items-center gap-3 border-b border-divider p-[18px] transition-colors last:border-b-0 hover:bg-surface-2 sm:grid-cols-[40px_1fr_180px_150px] sm:gap-[18px] ${
                   isNew ? 'bg-accent-bg-2' : ''
                 }`}
               >
                 <CompanyLogo name={app.empresa} size={40} radius={9} />
-                <div>
+                <Link to={job ? `/empleos/${job.id}` : '#'}>
                   <p className="text-[15.5px] font-[650] text-ink">{app.titulo}</p>
                   <p className="text-[13px] text-ink-4">
                     {app.empresa} · Postulaste {app.fecha}
                   </p>
-                </div>
+                </Link>
                 <div className="col-span-2 mt-2 sm:col-span-1 sm:mt-0">
                   <Pipeline estado={app.estado} />
                 </div>
-                <span
-                  className="w-fit rounded-full px-[11px] py-[5px] text-[12.5px] font-[650]"
+                <select
+                  value={app.estado}
+                  onChange={(e) => updateStatus(app.jobId, e.target.value)}
+                  className="w-fit cursor-pointer rounded-full border-none px-[11px] py-[5px] text-[12.5px] font-[650] outline-none"
                   style={{ background: cfg.badgeBg, color: cfg.badgeText }}
                 >
-                  {app.estado}
-                </span>
-              </Link>
+                  {STATUS_OPTIONS.map((s) => (
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
+                  ))}
+                </select>
+              </div>
             );
           })}
           {rows.length === 0 && (
             <p className="p-10 text-center text-sm text-ink-3">
-              No tienes postulaciones {tab === 'Archivadas' ? 'archivadas' : 'activas'} todavía.
+              {applications.length === 0 ? (
+                <>
+                  Cuando postules a una vacante desde su página de detalle, aparecerá aquí.{' '}
+                  <Link to="/empleos" className="font-semibold text-accent-ink">
+                    Buscar empleos →
+                  </Link>
+                </>
+              ) : (
+                `No tienes postulaciones ${tab === 'Archivadas' ? 'archivadas' : 'activas'} todavía.`
+              )}
             </p>
           )}
         </div>
       ) : (
         <div className="overflow-hidden rounded-[13px] border border-border bg-white">
           {savedJobs.map((job) => (
-            <div
-              key={job.id}
-              className="flex items-center gap-4 border-b border-divider p-[18px] last:border-b-0"
-            >
+            <div key={job.id} className="flex items-center gap-4 border-b border-divider p-[18px] last:border-b-0">
               <CompanyLogo name={job.empresa} size={40} radius={9} />
               <Link to={`/empleos/${job.id}`} className="flex-1">
                 <p className="text-[15.5px] font-[650] text-ink">{job.titulo}</p>
-                <p className="text-[13px] text-ink-4">{job.empresa} · {job.zona}</p>
+                <p className="text-[13px] text-ink-4">
+                  {job.empresa} · {job.zona}
+                </p>
               </Link>
-              <button
-                onClick={() => toggleSaved(job.id)}
-                className="shrink-0 text-[13px] text-accent-ink"
-              >
+              <button onClick={() => toggleSaved(job.id)} className="shrink-0 text-[13px] text-accent-ink">
                 Quitar
               </button>
             </div>

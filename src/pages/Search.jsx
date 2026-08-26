@@ -1,13 +1,22 @@
 import { useMemo, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { JOBS, USER, FILTER_COUNTS } from '../data/jobs';
+import { JOBS } from '../data/jobs';
 import MatchPill from '../components/MatchPill';
 import CompanyLogo from '../components/CompanyLogo';
 
-const TURNOS = ['Nocturno', 'Matutino', 'Vespertino', 'Rol 12x12'];
-const TRASLADOS = [20, 30, 45];
-const JORNADAS = ['Tiempo completo', 'Medio tiempo', 'Por proyecto'];
-const REQUISITOS = ['Sin experiencia', 'Con certificación', 'Con licencia'];
+const MODALIDADES = ['100% remoto', 'Colombia remoto', 'Remoto · LATAM'];
+const JORNADAS = ['Tiempo completo'];
+const STACKS = ['Figma', 'Shopify', 'B2B', 'IA', 'Web', 'Adobe', 'Liderazgo', 'Agencia'];
+
+function counts(list, getValues) {
+  const map = {};
+  list.forEach((job) => {
+    getValues(job).forEach((v) => {
+      map[v] = (map[v] || 0) + 1;
+    });
+  });
+  return map;
+}
 
 function toList(param) {
   return param ? param.split(',').filter(Boolean) : [];
@@ -37,12 +46,10 @@ function CheckRow({ label, count, checked, onChange }) {
 export default function Search() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState(searchParams.get('q') || '');
-  const [zona, setZona] = useState(searchParams.get('zona') || USER.zonaBase);
 
-  const turno = toList(searchParams.get('turno')) || [];
-  const requisito = toList(searchParams.get('requisito'));
-  const jornada = toList(searchParams.get('jornada') || 'Tiempo completo');
-  const traslado = toList(searchParams.get('traslado') || '30').map(Number);
+  const modalidad = toList(searchParams.get('modalidad'));
+  const jornada = toList(searchParams.get('jornada'));
+  const stack = toList(searchParams.get('stack'));
   const matchMin = Number(searchParams.get('matchMin') || 60);
   const orden = searchParams.get('orden') || 'match';
 
@@ -68,39 +75,37 @@ export default function Search() {
 
   const results = useMemo(() => {
     let list = JOBS.filter((job) => {
-      if (turno.length && !turno.includes(job.turno)) return false;
-      if (traslado.length && job.trasladoMin > Math.max(...traslado)) return false;
+      if (modalidad.length && !modalidad.includes(job.modalidad)) return false;
       if (jornada.length && !jornada.includes(job.jornada)) return false;
-      if (requisito.length && !requisito.some((r) => job.requisitos.includes(r))) return false;
+      if (stack.length && !stack.some((s) => job.stackTags.includes(s))) return false;
       if (job.match < matchMin) return false;
-      if (query.trim() && !job.titulo.toLowerCase().includes(query.trim().toLowerCase())) return false;
+      if (query.trim()) {
+        const q = query.trim().toLowerCase();
+        if (!job.titulo.toLowerCase().includes(q) && !job.empresa.toLowerCase().includes(q)) return false;
+      }
       return true;
     });
 
     if (orden === 'recientes') list = [...list].sort((a, b) => a.diasAgo - b.diasAgo);
-    else if (orden === 'salario') list = [...list].sort((a, b) => b.salarioMensual - a.salarioMensual);
+    else if (orden === 'salario') list = [...list].sort((a, b) => (b.salarioMensual ?? 0) - (a.salarioMensual ?? 0));
     else list = [...list].sort((a, b) => b.match - a.match);
 
     return list;
-  }, [turno, traslado, jornada, requisito, matchMin, orden, query]);
+  }, [modalidad, jornada, stack, matchMin, orden, query]);
+
+  const modalidadCounts = counts(JOBS, (j) => [j.modalidad]);
+  const jornadaCounts = counts(JOBS, (j) => [j.jornada]);
+  const stackCounts = counts(JOBS, (j) => j.stackTags);
 
   const filterGroups = [
-    { key: 'turno', title: 'Turno', options: TURNOS, current: turno, counts: FILTER_COUNTS.turno },
+    { key: 'modalidad', title: 'Modalidad', options: MODALIDADES, current: modalidad, counts: modalidadCounts },
+    { key: 'jornada', title: 'Jornada', options: JORNADAS, current: jornada, counts: jornadaCounts },
     {
-      key: 'traslado',
-      title: 'Tiempo de traslado',
-      options: TRASLADOS,
-      current: traslado.map(String),
-      counts: FILTER_COUNTS.traslado,
-      labelFn: (v) => `Hasta ${v} min`,
-    },
-    { key: 'jornada', title: 'Jornada', options: JORNADAS, current: jornada, counts: FILTER_COUNTS.jornada },
-    {
-      key: 'requisito',
-      title: 'Requisitos',
-      options: REQUISITOS,
-      current: requisito,
-      counts: FILTER_COUNTS.requisitos,
+      key: 'stack',
+      title: 'Stack / enfoque',
+      options: STACKS.filter((s) => stackCounts[s]),
+      current: stack,
+      counts: stackCounts,
     },
   ];
 
@@ -109,7 +114,7 @@ export default function Search() {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          updateParams({ q: query, zona });
+          updateParams({ q: query });
         }}
         className="mb-6 flex flex-col gap-2 rounded-[11px] border border-border-strong bg-white p-[7px] sm:flex-row sm:items-center"
       >
@@ -117,13 +122,7 @@ export default function Search() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="flex-1 rounded-lg border-none bg-transparent px-3 py-2 text-[14.5px] text-ink outline-none placeholder:text-ink-4"
-          placeholder="Puesto o palabra clave"
-        />
-        <span className="hidden h-6 w-px shrink-0 bg-border sm:block" />
-        <input
-          value={zona}
-          onChange={(e) => setZona(e.target.value)}
-          className="w-full shrink-0 rounded-lg border-none bg-transparent px-3 py-2 text-[14.5px] text-ink outline-none placeholder:text-ink-4 sm:w-[230px]"
+          placeholder="Puesto, empresa o palabra clave"
         />
         <button
           type="submit"
@@ -142,7 +141,7 @@ export default function Search() {
                 setSearchParams(
                   (prev) => {
                     const p = new URLSearchParams(prev);
-                    ['turno', 'traslado', 'jornada', 'requisito', 'matchMin'].forEach((k) => p.delete(k));
+                    ['modalidad', 'jornada', 'stack', 'matchMin'].forEach((k) => p.delete(k));
                     return p;
                   },
                   { replace: true },
@@ -156,19 +155,15 @@ export default function Search() {
           {filterGroups.map((group) => (
             <div key={group.key} className="mb-[18px] border-b border-divider pb-[18px] last:mb-0 last:border-b-0 last:pb-0">
               <p className="mb-1 font-mono text-[10.5px] uppercase tracking-[0.08em] text-ink-4">{group.title}</p>
-              {group.options.map((opt) => {
-                const label = group.labelFn ? group.labelFn(opt) : opt;
-                const checked = group.current.includes(String(opt));
-                return (
-                  <CheckRow
-                    key={opt}
-                    label={label}
-                    count={group.counts[opt]}
-                    checked={checked}
-                    onChange={() => toggleInGroup(group.key, group.current, String(opt))}
-                  />
-                );
-              })}
+              {group.options.map((opt) => (
+                <CheckRow
+                  key={opt}
+                  label={opt}
+                  count={group.counts[opt]}
+                  checked={group.current.includes(opt)}
+                  onChange={() => toggleInGroup(group.key, group.current, opt)}
+                />
+              ))}
             </div>
           ))}
           <div>
@@ -193,8 +188,7 @@ export default function Search() {
         <div>
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <p className="text-sm text-ink-3">
-              <span className="font-[650] text-ink">{results.length} vacantes</span> cerca de{' '}
-              {zona.split(',')[0]}
+              <span className="font-[650] text-ink">{results.length} vacantes</span> curadas para ti
             </p>
             <div className="flex gap-[3px] rounded-lg bg-[#edeef1] p-[3px]">
               {[
@@ -253,14 +247,12 @@ export default function Search() {
             ))}
             {results.length === 0 && (
               <div className="rounded-xl border border-border bg-white p-10 text-center">
-                <p className="text-[15px] text-ink-2">
-                  Ninguna vacante con {matchMin}%+ de compatibilidad. Prueba ampliar el traslado a 45 min.
-                </p>
+                <p className="text-[15px] text-ink-2">Ninguna vacante coincide con esos filtros.</p>
                 <button
-                  onClick={() => updateParams({ matchMin: 60, traslado: ['45'] })}
+                  onClick={() => updateParams({ matchMin: 60, modalidad: [], jornada: [], stack: [] })}
                   className="mt-4 rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-white"
                 >
-                  Ampliar búsqueda
+                  Limpiar filtros
                 </button>
               </div>
             )}

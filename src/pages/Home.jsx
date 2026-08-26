@@ -4,38 +4,36 @@ import { JOBS, USER, initials } from '../data/jobs';
 import MatchPill from '../components/MatchPill';
 
 const CHIPS = [
-  { label: 'Turno nocturno', param: 'turno', value: 'Nocturno' },
-  { label: 'Sin experiencia', param: 'requisito', value: 'Sin experiencia' },
-  { label: 'Medio tiempo', param: 'jornada', value: 'Medio tiempo' },
-  { label: 'Cerca de mi casa', param: 'traslado', value: '20' },
-  { label: 'Con certificación', param: 'requisito', value: 'Con certificación' },
+  { label: '100% remoto', param: 'modalidad', value: '100% remoto' },
+  { label: 'Colombia remoto', param: 'modalidad', value: 'Colombia remoto' },
+  { label: 'Figma', param: 'stack', value: 'Figma' },
+  { label: 'Shopify', param: 'stack', value: 'Shopify' },
 ];
 
 const VALUES = [
   {
     n: '01',
-    title: 'El turno primero',
-    body: 'Filtramos por horario real antes que por título del puesto. Si no puedes de noche, no lo verás.',
+    title: 'Curado a mano, no scrapeado',
+    body: 'No hay conexión automática a portales de empleo — Claude busca y agrega vacantes reales cuando se lo pides.',
   },
   {
     n: '02',
-    title: 'Distancia, no ciudad',
-    body: 'Calculamos minutos de traslado desde tu zona en transporte público, no kilómetros en línea recta.',
+    title: 'Comparado con tu perfil real',
+    body: 'Cada vacante se compara contra tu experiencia real (Koronet, Karibik, Triario) y tu stack, no contra un perfil genérico.',
   },
   {
     n: '03',
-    title: 'Requisitos claros',
-    body: 'Cada vacante muestra qué cumples y qué te falta antes de que gastes tiempo postulando.',
+    title: 'Aplicas en el sitio real',
+    body: 'Cada "Postular" te lleva a la publicación original de la empresa. Aquí solo llevas el control de a qué aplicaste.',
   },
 ];
 
 export default function Home() {
   const navigate = useNavigate();
-  const [query, setQuery] = useState('Auxiliar de almacén');
-  const [zona, setZona] = useState('Iztapalapa, CDMX');
+  const [query, setQuery] = useState('');
 
   function goSearch(extraParams = {}) {
-    const params = new URLSearchParams({ q: query, zona, ...extraParams });
+    const params = new URLSearchParams({ q: query, ...extraParams });
     navigate(`/empleos?${params.toString()}`);
   }
 
@@ -47,14 +45,14 @@ export default function Home() {
         <div className="mx-auto grid max-w-[1200px] items-center gap-16 lg:grid-cols-[1.15fr_0.85fr]">
           <div>
             <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.09em] text-accent-ink">
-              Operaciones · Retail · Salud · Servicio
+              Tu búsqueda de empleo · UX/UI Design
             </p>
             <h1 className="balance max-w-2xl text-[38px] font-bold leading-[1.05] tracking-[-0.03em] text-ink sm:text-[54px] sm:leading-[1.03]">
-              Empleos que encajan con tu turno, tu zona y tu experiencia.
+              Vacantes de diseño reales, elegidas para ti.
             </h1>
             <p className="balance mt-5 max-w-[520px] text-base leading-[1.55] text-ink-3 sm:text-[17px]">
-              Dinos cuándo puedes trabajar y hasta dónde te mueves. Ordenamos las vacantes por qué tan bien te
-              quedan, no por quién pagó más publicidad.
+              Nada de datos inventados: cada vacante aquí es una publicación real que Claude encontró y comparó
+              contra tu experiencia. Pide una actualización cuando quieras buscar más.
             </p>
 
             <form
@@ -68,14 +66,7 @@ export default function Home() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 className="flex-1 rounded-lg border-none bg-transparent px-3 py-2 text-[14.5px] text-ink outline-none placeholder:text-ink-4"
-                placeholder="Puesto o palabra clave"
-              />
-              <span className="hidden h-6 w-px shrink-0 bg-border sm:block" />
-              <input
-                value={zona}
-                onChange={(e) => setZona(e.target.value)}
-                className="w-full shrink-0 rounded-lg border-none bg-transparent px-3 py-2 text-[14.5px] text-ink outline-none placeholder:text-ink-4 sm:w-[170px]"
-                placeholder="Zona"
+                placeholder="Puesto, empresa o palabra clave"
               />
               <button
                 type="submit"
@@ -99,23 +90,22 @@ export default function Home() {
           </div>
 
           <div className="rounded-2xl border border-accent-border bg-accent-bg-2 p-[26px]">
-            <p className="font-mono text-[11px] uppercase tracking-[0.09em] text-accent-ink">
-              Tu perfil de disponibilidad
-            </p>
+            <p className="font-mono text-[11px] uppercase tracking-[0.09em] text-accent-ink">Tu perfil</p>
             <dl className="mt-5 flex flex-col">
               {[
-                ['Turnos que puedo cubrir', USER.turnos.join(', ')],
-                ['Traslado máximo', `${USER.trasladoMax} min`],
-                ['Zona base', USER.zonaBase],
-                ['Certificaciones', USER.certificaciones.join(' · ')],
+                ['Rol objetivo', USER.rolObjetivo],
+                ['Ubicación', USER.ubicacion],
+                ['Modalidad', USER.modalidad.join(' · ')],
+                ['Disponibilidad', USER.disponibilidad],
+                ['Stack', USER.stack.join(' · ')],
               ].map(([k, v], i, arr) => (
                 <div
                   key={k}
-                  className={`flex items-center justify-between py-[10px] ${
+                  className={`flex items-center justify-between gap-4 py-[10px] ${
                     i < arr.length - 1 ? 'border-b border-accent-border' : ''
                   }`}
                 >
-                  <dt className="text-[13.5px] text-accent-text-soft">{k}</dt>
+                  <dt className="shrink-0 text-[13.5px] text-accent-text-soft">{k}</dt>
                   <dd className="text-right text-[14.5px] font-semibold text-ink">{v}</dd>
                 </div>
               ))}
@@ -124,10 +114,10 @@ export default function Home() {
               onClick={() => goSearch()}
               className="mt-5 w-full rounded-[9px] bg-accent py-3 text-[14.5px] font-bold text-ink transition-colors hover:bg-accent-hover"
             >
-              Ver mis {JOBS.length} coincidencias
+              Ver las {JOBS.length} vacantes curadas
             </button>
             <p className="mt-3 text-[12.5px] text-accent-text-soft-2">
-              Editable en cualquier momento. Nunca compartimos tu ubicación exacta con la empresa.
+              Curado a mano por Claude — no es un feed automático. Pídele que busque más cuando quieras.
             </p>
           </div>
         </div>
@@ -136,7 +126,7 @@ export default function Home() {
       <section className="mx-auto max-w-[1200px] px-8 pb-20 pt-14">
         <div className="mb-5 flex items-center justify-between">
           <h2 className="text-[20px] font-bold tracking-[-0.02em] text-ink sm:text-[23px]">
-            Recomendadas para ti esta semana
+            Recomendadas para ti
           </h2>
           <Link to="/empleos" className="text-sm font-semibold text-accent-ink">
             Ver las {JOBS.length} →

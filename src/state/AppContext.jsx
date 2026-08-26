@@ -5,36 +5,7 @@ const AppContext = createContext(null);
 const APPLICATIONS_KEY = 'turno.applications';
 const SAVED_KEY = 'turno.savedJobIds';
 
-const SEED_APPLICATIONS = [
-  {
-    jobId: 'enfermera-piso-clinica-sur',
-    titulo: 'Enfermera/o de piso',
-    empresa: 'Clínica Sur',
-    fecha: 'el 21 ago',
-    estado: 'Entrevista',
-  },
-  {
-    jobId: 'asesor-tienda-marea',
-    titulo: 'Asesor de tienda',
-    empresa: 'Marea Retail',
-    fecha: 'el 19 ago',
-    estado: 'En revisión',
-  },
-  {
-    jobId: 'chofer-repartidor-nube',
-    titulo: 'Chofer repartidor licencia A',
-    empresa: 'Nube Express',
-    fecha: 'el 14 ago',
-    estado: 'Sin respuesta',
-  },
-  {
-    jobId: 'recepcionista-hotel-palma',
-    titulo: 'Recepcionista de hotel',
-    empresa: 'Hotel Palma',
-    fecha: 'el 9 ago',
-    estado: 'Cerrada',
-  },
-];
+const SEED_APPLICATIONS = [];
 
 function readJson(key, fallback) {
   try {
@@ -77,6 +48,9 @@ export function AppProvider({ children }) {
       },
       toggleSaved: (jobId) => {
         setSavedJobIds((prev) => (prev.includes(jobId) ? prev.filter((id) => id !== jobId) : [...prev, jobId]));
+      },
+      updateStatus: (jobId, estado) => {
+        setApplications((prev) => prev.map((a) => (a.jobId === jobId ? { ...a, estado } : a)));
       },
     }),
     [applications, savedJobIds, lastAppliedJobId],

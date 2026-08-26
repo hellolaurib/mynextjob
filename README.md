@@ -1,8 +1,10 @@
 # Turno
 
-Portal de empleos operativos y de servicio (logística, retail, salud, atención a cliente) con match personalizado por **turno**, **tiempo de traslado** y **certificaciones/requisitos** — en vez de ordenar vacantes por relevancia textual o presupuesto de publicidad.
+Herramienta personal de búsqueda de empleo de Laura Bedoya (UX/UI Designer). Reúne vacantes **reales** de diseño, curadas a mano por Claude (sin conexión automática a portales de empleo — Adzuna no cubre Colombia, y las APIs gratis sin registro como Remotive/Arbeitnow resultaron demasiado pobres en datos), comparadas contra su experiencia real y su stack.
 
-Prototipo de producto: cuatro pantallas (Inicio, Búsqueda, Detalle de vacante, Mis postulaciones) construidas en React + Tailwind, con estado de postulaciones/guardados persistido en `localStorage`.
+Cuatro pantallas (Inicio, Búsqueda, Detalle de vacante, Mis postulaciones) construidas en React + Tailwind. "Postular" abre la publicación original de cada empresa; el sitio solo lleva el registro local (`localStorage`) de a qué aplicó y en qué estado va cada proceso.
+
+Para agregar vacantes nuevas, pídele a Claude que busque y actualice `src/data/jobs.js`.
 
 ## Stack
 
