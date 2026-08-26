@@ -11,15 +11,38 @@ const CHIPS = [
 ];
 
 const ANIMO = [
-  'Cada "no" te deja más cerca del "sí" correcto.',
-  'Ya rediseñaste sitios, mega menús y una tienda entera — este proceso también lo vas a rediseñar a tu favor.',
-  'No estás empezando de cero: llevas 4+ años de experiencia real respaldándote.',
-  'Un rechazo no mide tu talento, mide qué tan bien encajaba ese puesto específico.',
-  'Postular es un número — entre más apliques con criterio, más rápido aparece la vacante correcta.',
-  'Tu portafolio ya demuestra lo que puedes hacer. Ahora solo falta que lo vea la persona correcta.',
-  'Mereces un lugar donde valoren el trabajo de investigar antes de diseñar. Ese lugar existe.',
-  'Respira. Un proceso a la vez, una entrevista a la vez.',
-  'Lo que sientes ahora es temporal. Lo que sabes hacer, no.',
+  {
+    header: 'Estoy abierta y receptiva a un trabajo maravilloso.',
+    subheader: 'Uso mis talentos de una forma positiva y satisfactoria, y la vida me apoya en cada paso.',
+  },
+  {
+    header: 'El trabajo correcto me está buscando a mí también.',
+    subheader: 'En el momento perfecto, de la forma perfecta, nos vamos a encontrar. Confío en el proceso de la vida.',
+  },
+  {
+    header: 'Merezco un trabajo que ame y que me ame.',
+    subheader: 'Libero toda duda y toda prisa. Lo que es para mí no se me va a escapar.',
+  },
+  {
+    header: 'Cada puerta que se cierra me acerca a la correcta.',
+    subheader: 'Confío en que la vida siempre está trabajando a mi favor, aunque hoy no lo vea completo.',
+  },
+  {
+    header: 'Soy suficiente, exactamente como soy ahora.',
+    subheader: 'Mi experiencia, mi criterio y mi forma de ver el diseño ya tienen un lugar esperándolas.',
+  },
+  {
+    header: 'Elijo pensamientos que me hacen sentir en paz con este proceso.',
+    subheader: 'Un paso a la vez. No tengo que resolver todo hoy — solo el siguiente paso.',
+  },
+  {
+    header: 'La abundancia se mueve libremente hacia mí.',
+    subheader: 'Nuevas y buenas oportunidades se abren para mí ahora, de maneras que ni siquiera imagino todavía.',
+  },
+  {
+    header: 'Me libero de la ansiedad y elijo confiar.',
+    subheader: 'Estoy a salvo. La vida me ama y me sostiene, incluso en los días de espera.',
+  },
 ];
 
 const VALUES = [
@@ -61,11 +84,10 @@ export default function Home() {
               Tu búsqueda de empleo · UX/UI Design
             </p>
             <h1 className="balance max-w-2xl text-[32px] font-bold leading-[1.15] tracking-[-0.03em] text-ink sm:text-[44px] sm:leading-[1.1]">
-              {animo}
+              {animo.header}
             </h1>
             <p className="balance mt-5 max-w-[520px] text-base leading-[1.55] text-ink-3 sm:text-[17px]">
-              Cada vacante de aquí abajo es una publicación real, comparada contra tu experiencia — nada
-              inventado. Pide una actualización cuando quieras buscar más.
+              {animo.subheader}
             </p>
 
             <form
