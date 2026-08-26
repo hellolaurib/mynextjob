@@ -170,16 +170,8 @@ export default function JobDetail() {
               <span className="flex size-10 items-center justify-center rounded-full bg-accent text-[18px] font-bold text-ink">
                 ✓
               </span>
-              <h3 className="mt-3 text-[18px] font-bold text-ink">Marcada como postulada</h3>
-              <p className="mt-1 text-sm text-accent-text-soft">
-                Quedó registrada en Mis postulaciones con fecha de hoy.
-              </p>
-              <button
-                onClick={() => navigate('/postulaciones')}
-                className="mt-4 w-full rounded-[10px] bg-ink py-3.5 text-[15px] font-[650] text-white transition-opacity hover:opacity-90"
-              >
-                Ver mis postulaciones
-              </button>
+              <h3 className="mt-3 text-[18px] font-bold text-ink">Ya postulaste</h3>
+              <p className="mt-1 text-sm text-accent-text-soft">Buen trabajo. Sigue con la siguiente.</p>
             </div>
           )}
 

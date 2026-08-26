@@ -20,9 +20,6 @@ export default function Header() {
           <NavLink to="/empleos" className={navLinkClass}>
             Buscar empleos
           </NavLink>
-          <NavLink to="/postulaciones" className={navLinkClass}>
-            Mis postulaciones
-          </NavLink>
         </nav>
         <div className="flex items-center gap-2.5">
           <span className="text-sm text-ink-3">{USER.nombre}</span>
