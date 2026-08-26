@@ -10,6 +10,18 @@ const CHIPS = [
   { label: 'Shopify', param: 'stack', value: 'Shopify' },
 ];
 
+const ANIMO = [
+  'Cada "no" te deja más cerca del "sí" correcto.',
+  'Ya rediseñaste sitios, mega menús y una tienda entera — este proceso también lo vas a rediseñar a tu favor.',
+  'No estás empezando de cero: llevas 4+ años de experiencia real respaldándote.',
+  'Un rechazo no mide tu talento, mide qué tan bien encajaba ese puesto específico.',
+  'Postular es un número — entre más apliques con criterio, más rápido aparece la vacante correcta.',
+  'Tu portafolio ya demuestra lo que puedes hacer. Ahora solo falta que lo vea la persona correcta.',
+  'Mereces un lugar donde valoren el trabajo de investigar antes de diseñar. Ese lugar existe.',
+  'Respira. Un proceso a la vez, una entrevista a la vez.',
+  'Lo que sientes ahora es temporal. Lo que sabes hacer, no.',
+];
+
 const VALUES = [
   {
     n: '01',
@@ -31,6 +43,7 @@ const VALUES = [
 export default function Home() {
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
+  const [animo] = useState(() => ANIMO[Math.floor(Math.random() * ANIMO.length)]);
 
   function goSearch(extraParams = {}) {
     const params = new URLSearchParams({ q: query, ...extraParams });
@@ -47,12 +60,12 @@ export default function Home() {
             <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.09em] text-accent-ink">
               Tu búsqueda de empleo · UX/UI Design
             </p>
-            <h1 className="balance max-w-2xl text-[38px] font-bold leading-[1.05] tracking-[-0.03em] text-ink sm:text-[54px] sm:leading-[1.03]">
-              Vacantes de diseño reales, elegidas para ti.
+            <h1 className="balance max-w-2xl text-[32px] font-bold leading-[1.15] tracking-[-0.03em] text-ink sm:text-[44px] sm:leading-[1.1]">
+              {animo}
             </h1>
             <p className="balance mt-5 max-w-[520px] text-base leading-[1.55] text-ink-3 sm:text-[17px]">
-              Nada de datos inventados: cada vacante aquí es una publicación real que Claude encontró y comparó
-              contra tu experiencia. Pide una actualización cuando quieras buscar más.
+              Cada vacante de aquí abajo es una publicación real, comparada contra tu experiencia — nada
+              inventado. Pide una actualización cuando quieras buscar más.
             </p>
 
             <form

@@ -1,4 +1,4 @@
-# Turno
+# MyNextJob
 
 Herramienta personal de búsqueda de empleo de Laura Bedoya (UX/UI Designer). Reúne vacantes **reales** de diseño, curadas a mano por Claude (sin conexión automática a portales de empleo — Adzuna no cubre Colombia, y las APIs gratis sin registro como Remotive/Arbeitnow resultaron demasiado pobres en datos), comparadas contra su experiencia real y su stack.
 

@@ -14,7 +14,7 @@ export default function Header() {
           <span className="relative block size-[22px] shrink-0 rounded-[6px] bg-ink">
             <span className="absolute left-[5px] top-[5px] block size-3 rounded-[3px] bg-accent" />
           </span>
-          <span className="text-[19px] font-bold tracking-[-0.02em] text-ink">Turno</span>
+          <span className="text-[19px] font-bold tracking-[-0.02em] text-ink">MyNextJob</span>
         </NavLink>
         <nav className="flex flex-1 items-center gap-1">
           <NavLink to="/empleos" className={navLinkClass}>
