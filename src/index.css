@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;450;500;600;650;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Public Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --color-ink: #17181c;
+  --color-ink-2: #3b3f49;
+  --color-ink-3: #5a5f6b;
+  --color-ink-4: #8a8f9c;
+  --color-border: #ebe4e6;
+  --color-border-strong: #d9dce2;
+  --color-divider: #f2ecee;
+  --color-bg: #f9f6f7;
+  --color-surface: #ffffff;
+  --color-surface-2: #fcfafb;
+  --color-fill: #f4f0f1;
+  --color-fill-2: #f7f3f4;
+  --color-accent: #e08fa3;
+  --color-accent-hover: #d2778f;
+  --color-accent-ink: #a24261;
+  --color-accent-bg: #fcedf1;
+  --color-accent-bg-2: #fdf5f7;
+  --color-accent-border: #f4dae1;
+  --color-accent-text-soft: #7c4a59;
+  --color-accent-text-soft-2: #a2737f;
+  --color-positive: #4a7c59;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-ink);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.balance {
+  text-wrap: balance;
+}
